@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bing Search Comparison</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .search-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 0 10px;
+        }
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #006cbd;
+        }
+        .results-container {
+            display: flex;
+            gap: 10px;
+            height: 90vh;
+        }
+        .results-frame {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-width: 0;  /* Prevents flex items from overflowing */
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .share-link {
+            padding: 8px;
+            margin: 0 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            word-break: break-all;
+            font-size: 0.9em;
+        }
+        h1 {
+            margin: 10px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bing Search Comparison</h1>
+        <div class="search-controls">
+            <div class="input-group">
+                <input type="text" id="query1" placeholder="First search query">
+            </div>
+            <div class="input-group">
+                <input type="text" id="query2" placeholder="Second search query">
+            </div>
+            <button onclick="performSearch()">Search</button>
+        </div>
+        <div class="share-link" id="shareLink"></div>
+        <div class="results-container">
+            <div class="results-frame">
+                <iframe id="frame1"></iframe>
+            </div>
+            <div class="results-frame">
+                <iframe id="frame2"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function performSearch() {
+            const query1 = encodeURIComponent(document.getElementById('query1').value);
+            const query2 = encodeURIComponent(document.getElementById('query2').value);
+            
+            const frame1 = document.getElementById('frame1');
+            const frame2 = document.getElementById('frame2');
+            
+            frame1.src = `https://www.bing.com/search?q=${query1}`;
+            frame2.src = `https://www.bing.com/search?q=${query2}`;
+            
+            // Update share link
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('q1', query1);
+            currentUrl.searchParams.set('q2', query2);
+            document.getElementById('shareLink').textContent = currentUrl.toString();
+        }
+
+        // Load queries from URL parameters on page load
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const q1 = urlParams.get('q1');
+            const q2 = urlParams.get('q2');
+            
+            if (q1) document.getElementById('query1').value = decodeURIComponent(q1);
+            if (q2) document.getElementById('query2').value = decodeURIComponent(q2);
+            
+            if (q1 || q2) performSearch();
+        }
+    </script>
+</body>
+</html>
